@@ -9,7 +9,7 @@ import org.example.test.entity.Blog;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public interface BlogMapper {
 

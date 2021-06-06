@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public interface Executor {
 

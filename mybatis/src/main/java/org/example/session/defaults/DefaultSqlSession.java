@@ -8,7 +8,7 @@ import org.example.session.SqlSession;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class DefaultSqlSession implements SqlSession {
 

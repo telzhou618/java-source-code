@@ -1,7 +1,7 @@
 package org.example.mapping;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public enum SqlCommandType {
     UNKNOWN, INSERT, UPDATE, DELETE, SELECT;

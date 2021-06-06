@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class XMLMapperBuilder {
 

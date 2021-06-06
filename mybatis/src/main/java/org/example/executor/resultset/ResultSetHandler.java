@@ -5,7 +5,7 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public interface ResultSetHandler {
 

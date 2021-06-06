@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class DefaultResultSetHandler implements ResultSetHandler {
 

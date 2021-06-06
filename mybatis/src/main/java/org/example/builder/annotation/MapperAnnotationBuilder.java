@@ -10,7 +10,7 @@ import java.lang.reflect.*;
 import java.util.Collection;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class MapperAnnotationBuilder {
 

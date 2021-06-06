@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class XmlSqlCrudMain {
 

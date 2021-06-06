@@ -7,7 +7,7 @@ import org.example.session.SqlSession;
 import org.example.session.SqlSessionFactory;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 

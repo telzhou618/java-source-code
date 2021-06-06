@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class XMLConfigBuilder {
 

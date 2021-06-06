@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 /**
- * @author zhougaojun
+ * @author zhou1
  */
 public class DruidDataSourceFactory implements DataSourceFactory {
 
