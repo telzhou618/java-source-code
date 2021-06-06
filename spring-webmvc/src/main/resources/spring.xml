@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans>
+    <!--定义扫描包的路径-->
+    <component-scan package="com.example.blog"/>
+</beans>
