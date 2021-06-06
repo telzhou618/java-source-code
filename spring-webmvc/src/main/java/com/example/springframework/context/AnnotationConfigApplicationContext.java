@@ -113,9 +113,7 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
      * 创建非懒加载的单例bean
      */
     private void doCreateSingletonsBean() {
-        Iterator<String> iterator = beanDefinitionMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            String beanName = iterator.next();
+        for (String beanName : beanDefinitionMap.keySet()) {
             BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
             if (!beanDefinition.isLazyInit()) {
                 if (beanDefinition.getScope().equals("singleton")) {
