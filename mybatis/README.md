@@ -1,5 +1,6 @@
 # mybatis
-手写 mybatis
+手写 mybatis,mybatis包是手写mybatis的核心源码实现，已经实现了xml SQL 和 注解方式SQL两种方式。
+example 包是使用实例。
 ## Configure
 Mybatis 配置类，所有配置信息在启动时会解析到配置类中。
 ## SqlSession

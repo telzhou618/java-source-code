@@ -1,10 +1,10 @@
 package org.example;
 
-import org.example.io.Resources;
-import org.example.session.SqlSession;
-import org.example.session.SqlSessionFactory;
-import org.example.session.SqlSessionFactoryBuilder;
-import org.example.test.mapper.BlogMapper;
+import org.mybatis.io.Resources;
+import org.mybatis.session.SqlSession;
+import org.mybatis.session.SqlSessionFactory;
+import org.mybatis.session.SqlSessionFactoryBuilder;
+import org.example.mapper.BlogMapper;
 
 import java.io.InputStream;
 

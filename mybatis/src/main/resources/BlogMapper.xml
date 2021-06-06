@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<mapper namespace="org.example.test.mapper.BlogMapper">
+<mapper namespace="org.example.mapper.BlogMapper">
 
-    <select id="selectBlog" resultType="org.example.test.entity.Blog">
+    <select id="selectBlog" resultType="org.example.entity.Blog">
         select * from Blog where id = #{id}
     </select>
 
-    <select id="selectAllBlog" resultType="org.example.test.entity.Blog">
+    <select id="selectAllBlog" resultType="org.example.entity.Blog">
         select * from Blog
     </select>
 
