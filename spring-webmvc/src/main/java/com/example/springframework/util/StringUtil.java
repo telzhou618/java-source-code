@@ -83,4 +83,11 @@ public class StringUtil {
         }
         return null;
     }
+
+    public static boolean isEmpty(CharSequence s) {
+        if (s == null) {
+            return true;
+        }
+        return s.length() == 0;
+    }
 }

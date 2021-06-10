@@ -1,6 +1,7 @@
 package com.example.springframework.webmvc.servlet;
 
 import com.example.springframework.context.AnnotationConfigApplicationContext;
+import com.example.springframework.util.Asserts;
 import com.example.springframework.util.Resources;
 import com.example.springframework.util.XmlUtil;
 import com.example.springframework.webmvc.adapter.HandlerAdapter;
@@ -28,6 +29,9 @@ import java.util.Optional;
 @Slf4j
 public class DispatcherServlet extends FrameworkServlet {
 
+    /**
+     * ioc 容器
+     */
     private AnnotationConfigApplicationContext applicationContext;
     /**
      * HandlerAdapter
@@ -55,9 +59,7 @@ public class DispatcherServlet extends FrameworkServlet {
         try {
             // 实例化Spring 容器，扫描包，实例化bean,获取扫描包路径
             String configureLocation = config.getInitParameter("configureLocation");
-            if (configureLocation == null) {
-                throw new RuntimeException("spring.xml文件路径不合法！");
-            }
+            Asserts.notBlank(configureLocation, " 'spring.xml' location");
             Document document = XmlUtil.parse(Resources.getResourceURL(configureLocation));
             String aPackage = Optional.of(document)
                     .map(Document::getRootElement)

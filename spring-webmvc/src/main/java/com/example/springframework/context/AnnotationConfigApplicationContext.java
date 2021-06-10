@@ -1,8 +1,11 @@
 package com.example.springframework.context;
 
-import com.example.springframework.annotation.*;
+import com.example.springframework.annotation.Autowired;
+import com.example.springframework.annotation.Controller;
+import com.example.springframework.annotation.Service;
 import com.example.springframework.exception.BeansException;
 import com.example.springframework.util.AnnotationUtils;
+import com.example.springframework.util.Asserts;
 import com.example.springframework.util.Resources;
 import com.example.springframework.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +19,17 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
+ * bean 容器，先不考虑懒加载和原型bean
+ *
  * @author zhougaojun
  */
 @Slf4j
 public class AnnotationConfigApplicationContext implements BeanFactory {
     private final String scanPackage;
 
+    /**
+     * beanName 存储 map
+     */
     private final List<String> beanNames = new ArrayList<>(256);
     /**
      * bean 定义存储 map
@@ -47,6 +55,7 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
     }
 
     private void cleanContext() {
+        this.beanNames.clear();
         this.beanDefinitionMap.clear();
         this.singletonsBeanMap.clear();
     }
@@ -55,10 +64,8 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
      * 扫描包,注册bean定义
      */
     private void doScanner(String scanPackage) {
-        if (StringUtil.isBlank(scanPackage)) {
-            throw new BeansException("scanPackage path is not empty");
-        }
         try {
+            Asserts.notBlank(scanPackage, "scanPackage");
             File file = Resources.getPackageAsFile(scanPackage);
             // 使用common-io 递归获取指定目录下所有.class 文件
             Collection<File> files = FileUtils.listFiles(file, FileFilterUtils.suffixFileFilter("class"), DirectoryFileFilter.INSTANCE);
@@ -71,7 +78,6 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
                 // 加载类
                 Class<?> aClass = Class.forName(classPath);
                 if (AnnotationUtils.isAnyAnnotationPresent(new Class[]{Service.class, Controller.class}, aClass)) {
-
                     BeanDefinition beanDefinition = new BeanDefinition();
                     beanDefinition.setBeanClass(aClass);
                     // 设置 beanName
@@ -85,19 +91,6 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
                     }
                     // beanName为空 取简称首字母小写
                     beanName = StringUtil.emptyToDefault(beanName, StringUtil.toLowerCaseFirstOne(aClass.getSimpleName()));
-
-                    // 设置是否懒加载
-                    if (AnnotationUtils.isAnnotationPresent(Lazy.class, aClass)) {
-                        beanDefinition.setLazyInit(true);
-                    }
-                    // 设置作用域
-                    if (AnnotationUtils.isAnnotationPresent(Scope.class, aClass)) {
-                        Scope scope = AnnotationUtils.findAnnotation(Scope.class, aClass);
-                        String scopeValue = scope.value();
-                        if (StringUtil.isBlank(scopeValue)) {
-                            beanDefinition.setScope(scopeValue);
-                        }
-                    }
                     beanNames.add(beanName);
                     beanDefinitionMap.put(beanName, beanDefinition);
                     log.info("注册bean定义,beanDefinition ={}", beanDefinition);
@@ -115,12 +108,8 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
     private void doCreateSingletonsBean() {
         for (String beanName : beanDefinitionMap.keySet()) {
             BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
-            if (!beanDefinition.isLazyInit()) {
-                if (beanDefinition.getScope().equals("singleton")) {
-                    Object bean = doCreateBean(beanDefinition, beanName);
-                    singletonsBeanMap.put(beanName, bean);
-                }
-            }
+            Object bean = doCreateBean(beanDefinition, beanName);
+            singletonsBeanMap.put(beanName, bean);
         }
     }
 
@@ -155,13 +144,7 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
     @Override
     public <T> T getBean(String beanName) throws BeansException {
         BeanDefinition beanDefinition = beanDefinitionMap.get(beanName);
-        if (beanDefinition == null) {
-            throw new BeansException(beanName + "'s beanDefinition is not exist");
-        }
-        // 原型 bean 直接创建
-        if (beanDefinition.getScope().equals("prototype")) {
-            return (T) doCreateBean(beanDefinition, beanName);
-        }
+        Asserts.notNull(beanDefinition, "beanName");
         // 单例 bean 先在单例池中找，找到了直接返回，没找到则创建单例bean,再放进单例池，再返回。
         Object bean = singletonsBeanMap.get(beanName);
         if (bean == null) {
@@ -171,6 +154,9 @@ public class AnnotationConfigApplicationContext implements BeanFactory {
         return (T) bean;
     }
 
+    /**
+     * 根据 Class 类型获取 bean
+     */
     @Override
     public <T> T getBean(Class clazz) throws BeansException {
         Iterator<String> iterator = beanDefinitionMap.keySet().iterator();
