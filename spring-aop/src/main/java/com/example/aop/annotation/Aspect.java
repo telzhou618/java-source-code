@@ -1,4 +1,4 @@
-package com.example.anno;
+package com.example.aop.annotation;
 
 import java.lang.annotation.*;
 
@@ -6,4 +6,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 public @interface Aspect {
+
+    String value() default "";
 }

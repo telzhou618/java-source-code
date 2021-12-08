@@ -1,22 +1,28 @@
-package com.example.proxy;
+package com.example.aop.proxy;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+
+import java.lang.reflect.Method;
 
 /**
  * cglib 动态代理,可以代理普通类(没有实现接口的类)
  *
  * @author jameszhou
  */
-public class CglibProxy {
+public class CglibProxy implements AopProxy, MethodInterceptor {
 
     private Enhancer enhancer = new Enhancer();
 
-    public CglibProxy(Class targetClass, MethodInterceptor methodInterceptor) {
-        enhancer.setSuperclass(targetClass);
-        enhancer.setCallback(methodInterceptor);
-    }
+    private final AdvisedSupport advised;
 
+    public CglibProxy(AdvisedSupport advisedSupport) {
+        this.advised = advisedSupport;
+        enhancer.setSuperclass(advisedSupport.getTarget().getClass());
+        enhancer.setCallback(this);
+    }
+    @Override
     public Object getProxy() {
         return enhancer.create();
     }
@@ -36,5 +42,10 @@ public class CglibProxy {
             buffer.append(object.toString());
         }
         return buffer.toString();
+    }
+
+    @Override
+    public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+        return null;
     }
 }

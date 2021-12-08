@@ -1,22 +1,25 @@
 package com.example.config;
 
-import com.example.anno.After;
-import com.example.anno.Aspect;
-import com.example.anno.Before;
+import com.example.aop.annotation.After;
+import com.example.aop.annotation.Aspect;
+import com.example.aop.annotation.Before;
+import com.example.aop.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jameszhou
  */
-@Component
 @Aspect
+@Component
 public class LogAop {
+
+    @Pointcut("execution(public * com.example.service.impl.*.*(..))")
+    public void pointCut(){}
 
     @Before
     public void beforeLog() {
-        System.out.println("业务执行前记录日志！");
+        System.out.println("业务执行前记录日志!");
     }
-
 
     @After
     public void afterLog() {
