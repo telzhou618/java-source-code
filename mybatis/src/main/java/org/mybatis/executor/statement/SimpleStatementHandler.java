@@ -59,8 +59,8 @@ public class SimpleStatementHandler implements StatementHandler {
 
     @Override
     public <E> List<E> query(Statement statement) throws SQLException {
-        LOG.info("Preparing : " + sql.trim());
-        LOG.info("Parameters : " + getParameterValueString());
+        LOG.debug("Preparing : " + sql.trim());
+        LOG.debug("Parameters : " + getParameterValueString());
         PreparedStatement ps = (PreparedStatement) statement;
         ps.execute();
         // 结果集处理交给 resultSetHandler
@@ -69,8 +69,8 @@ public class SimpleStatementHandler implements StatementHandler {
 
     @Override
     public int update(Statement statement) throws SQLException{
-        LOG.info("Preparing : " + sql.trim());
-        LOG.info("Parameters : " + getParameterValueString());
+        LOG.debug("Preparing : " + sql.trim());
+        LOG.debug("Parameters : " + getParameterValueString());
         //调用PreparedStatement.execute和PreparedStatement.getUpdateCount
         PreparedStatement ps = (PreparedStatement) statement;
         ps.execute();
