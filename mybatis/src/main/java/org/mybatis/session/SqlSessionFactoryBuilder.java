@@ -17,6 +17,7 @@ public class SqlSessionFactoryBuilder {
     public SqlSessionFactory build(InputStream inputStream) {
         try {
             XMLConfigBuilder parser = new XMLConfigBuilder(inputStream);
+            // 解析XML
             Configuration configuration = parser.parse();
             return new DefaultSqlSessionFactory(configuration);
         } catch (Exception e) {
