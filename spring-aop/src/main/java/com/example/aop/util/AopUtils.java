@@ -3,9 +3,9 @@ package com.example.aop.util;
 import com.example.aop.annotation.*;
 import com.example.aop.core.Advice;
 import com.example.aop.core.AfterAdviceInfo;
+import com.example.aop.core.AfterThrowingAdviceInfo;
 import com.example.aop.core.BeforeAdviceInfo;
 import org.springframework.lang.Nullable;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
@@ -16,10 +16,6 @@ import java.util.stream.Stream;
  * @since 2021/12/14
  */
 public class AopUtils {
-    public static boolean isCglibProxy(@Nullable Object object) {
-        assert object != null;
-        return object.getClass().getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR);
-    }
 
     public static boolean isAspectAnnotation(@Nullable Object object) {
         assert object != null;
@@ -51,6 +47,6 @@ public class AopUtils {
     }
 
     public static boolean isAfterThrowingAdvice(Advice advice) {
-        return advice instanceof AfterAdviceInfo;
+        return advice instanceof AfterThrowingAdviceInfo;
     }
 }

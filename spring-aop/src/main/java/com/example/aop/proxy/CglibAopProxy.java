@@ -37,34 +37,31 @@ public class CglibAopProxy implements AopProxy, MethodInterceptor {
         Object target = advised.getTarget();
         Class<?> targetClass = target.getClass();
 
-        // 排除 toString,equals,hashCode 方法无需增强
+        // 排除 toString,equals,hashCode,aspect 方法无需增强
         if (ReflectionUtils.isEqualsMethod(method)
                 || ReflectionUtils.isHashCodeMethod(method)
-                || ReflectionUtils.isToStringMethod(method)) {
+                || ReflectionUtils.isToStringMethod(method)
+                || AopUtils.isAspectAnnotation(target)) {
             return method.invoke(advised.getTarget(), args);
         }
-        if (AopUtils.isAspectAnnotation(advised.getTarget())) {
-            return method.invoke(advised.getTarget(), args);
-        }
-        Object invoke = null;
         try {
             // 执行 before
             for (Advisor advisor : advised.getBeforeAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(args);
             }
-            invoke = methodProxy.invokeSuper(o, args);
+            Object invoke = methodProxy.invokeSuper(o, args);
             // 执行 after
-            for (Advisor advisor : advised.getAfterAdvisors(method,targetClass)) {
+            for (Advisor advisor : advised.getAfterAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(args);
             }
+            return invoke;
         } catch (Exception e) {
-            e.printStackTrace();
             // 执行 AfterThrowing
-            for (Advisor advisor : advised.getAfterThrowingAdvisors(method,targetClass)) {
+            for (Advisor advisor : advised.getAfterThrowingAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(args);
             }
+            throw e;
         }
-        return invoke;
 
     }
 }

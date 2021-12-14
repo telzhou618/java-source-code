@@ -13,7 +13,7 @@ import java.lang.reflect.Proxy;
  *
  * @author telzhou
  */
-public class JdkDynamicAopProxy  implements AopProxy, InvocationHandler {
+public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
 
     private final AdvisedSupport advised;
 
@@ -32,34 +32,30 @@ public class JdkDynamicAopProxy  implements AopProxy, InvocationHandler {
         Object target = advised.getTarget();
         Class<?> targetClass = target.getClass();
 
-        // 排除 toString,equals,hashCode 方法无需增强
+        // 排除 toString,equals,hashCode aspect方法无需增强
         if (ReflectionUtils.isEqualsMethod(method)
                 || ReflectionUtils.isHashCodeMethod(method)
-                || ReflectionUtils.isToStringMethod(method)) {
+                || ReflectionUtils.isToStringMethod(method)
+                || AopUtils.isAspectAnnotation(target)) {
             return method.invoke(target, arguments);
         }
-        // 切面类不走代理
-        if (AopUtils.isAspectAnnotation(target)) {
-            return method.invoke(target, arguments);
-        }
-        Object invoke = null;
         try {
             // 执行 before
             for (Advisor advisor : advised.getBeforeAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(arguments);
             }
-            invoke = method.invoke(advised.getTarget(), arguments);
+            Object invoke = method.invoke(advised.getTarget(), arguments);
             // 执行 after
             for (Advisor advisor : advised.getAfterAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(arguments);
             }
+            return invoke;
         } catch (Exception e) {
-            e.printStackTrace();
             // 执行 AfterThrowing
             for (Advisor advisor : advised.getAfterThrowingAdvisors(method, targetClass)) {
                 advisor.getAdvice().invoke(arguments);
             }
+            throw e;
         }
-        return invoke;
     }
 }

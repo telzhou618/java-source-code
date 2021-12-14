@@ -16,16 +16,16 @@ public class LogAop {
 
     @Before
     public void beforeLog() {
-        System.out.println("业务执行前...");
+        System.out.println("业务方法执行前执行...");
     }
 
     @After
     public void afterLog() {
-        System.out.println("业务执行后...");
+        System.out.println("业务方法执行后执行...");
     }
 
     @AfterThrowing
     public void afterThrowing() {
-        System.out.println("业务方法执行异常...");
+        System.out.println("业务方法执行异常时执行...");
     }
 }
