@@ -1,7 +1,7 @@
 package com.example.aop.proxy;
 
 /**
- * @author zhougaojun
+ * @author telzhou
  * @since 2021/12/7
  */
 public interface AopProxy {

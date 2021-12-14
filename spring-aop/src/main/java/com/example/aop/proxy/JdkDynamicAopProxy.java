@@ -11,7 +11,7 @@ import java.lang.reflect.Proxy;
 /**
  * JDK 动态代理,代理类必须实现接口
  *
- * @author jameszhou
+ * @author telzhou
  */
 public class JdkDynamicAopProxy  implements AopProxy, InvocationHandler {
 

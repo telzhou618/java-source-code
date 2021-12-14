@@ -5,7 +5,7 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import java.lang.reflect.Method;
 
 /**
- * @author zhougaojun
+ * @author telzhou
  * @since 2021/12/14
  */
 public abstract class AdvisorSupport implements Advisor {

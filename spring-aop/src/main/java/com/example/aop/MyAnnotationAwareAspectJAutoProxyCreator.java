@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author jameszhou
+ * @author telzhou
  */
 public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProxyCreator {
 

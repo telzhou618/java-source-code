@@ -3,7 +3,7 @@ package com.example.aop.core;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * @author zhougaojun
+ * @author telzhou
  * @since 2021/12/7
  */
 public interface Advice {

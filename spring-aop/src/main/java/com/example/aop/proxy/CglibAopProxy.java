@@ -12,7 +12,7 @@ import java.lang.reflect.Method;
 /**
  * cglib 动态代理,可以代理普通类(没有实现接口的类)
  *
- * @author jameszhou
+ * @author telzhou
  */
 public class CglibAopProxy implements AopProxy, MethodInterceptor {
 

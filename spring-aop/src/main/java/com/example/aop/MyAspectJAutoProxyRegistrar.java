@@ -6,7 +6,7 @@ import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
 /**
- * @author zhougaojun
+ * @author telzhou
  * @since 2021/12/7
  */
 public class MyAspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
