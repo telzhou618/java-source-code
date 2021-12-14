@@ -10,7 +10,7 @@ import com.dubbo.framework.server.http.HttpProtocol;
 import com.dubbo.provider.impl.UserServiceImpl;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/11
  */
 public class Application2 {

@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/21
  */
 @Getter

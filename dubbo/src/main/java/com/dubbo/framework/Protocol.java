@@ -1,7 +1,7 @@
 package com.dubbo.framework;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/21
  */
 public interface Protocol {

@@ -7,7 +7,7 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
 /**
  * Protobuf 序列化
  *
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/11
  */
 public class ProtobufSerializeUtil {

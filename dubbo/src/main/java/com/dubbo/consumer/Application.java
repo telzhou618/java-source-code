@@ -4,7 +4,7 @@ import com.dubbo.api.UserService;
 import com.dubbo.framework.ProxyFactory;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/11
  */
 public class Application {

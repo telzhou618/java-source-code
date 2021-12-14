@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 本地文件注册，服务调用这和消费者必须在同一台机器
  *
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/11
  */
 public class LocalFileRegister implements Register {

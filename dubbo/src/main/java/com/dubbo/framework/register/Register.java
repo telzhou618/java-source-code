@@ -5,7 +5,7 @@ import com.dubbo.framework.Url;
 import java.util.List;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/21
  */
 public interface Register {

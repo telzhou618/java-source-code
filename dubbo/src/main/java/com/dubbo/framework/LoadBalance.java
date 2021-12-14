@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * @author zhou1
+ * @author telzhou
  * @since 2021/6/21
  */
 public class LoadBalance {
