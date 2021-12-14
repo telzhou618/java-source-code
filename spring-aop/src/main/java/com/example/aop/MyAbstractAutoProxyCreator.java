@@ -19,7 +19,7 @@ import java.util.List;
 public abstract class MyAbstractAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware, Ordered {
 
     /**
-     * 所以切面解析完成，保存在这里
+     * 所有切面解析完成，保存在这里
      */
     protected static List<Advisor> advisorList = new ArrayList<>(256);
 

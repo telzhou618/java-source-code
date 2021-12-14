@@ -5,7 +5,7 @@ package com.example.aop.core;
  * @author zhougaojun
  * @since 2021/12/7
  */
-public interface Advisor extends Matcher{
+public interface Advisor extends PointCutMatcher {
 
     /**
      * 切面

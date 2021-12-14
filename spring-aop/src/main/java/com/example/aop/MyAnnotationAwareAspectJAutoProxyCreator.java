@@ -11,9 +11,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author jameszhou
@@ -23,20 +23,19 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
 
     @Override
     public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) throws BeansException {
-        // 解析
-        List<Advisor> advisors = buildAspectJAdvisors();
-        advisorList.addAll(advisors);
+        // 解析切面，存入缓存
+        buildAspectJAdvisors();
         return null;
     }
 
 
-    private List<Advisor> buildAspectJAdvisors() {
+    private void buildAspectJAdvisors() {
 
-        List<Advisor> advisors = new ArrayList<>();
         // 得到容器中所以的beanName
         String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
                 this.beanFactory, Object.class, true, false);
 
+        // 循环解析
         for (String beanName : beanNames) {
             if (aspectNameCache.contains(beanName)) {
                 continue;
@@ -47,66 +46,56 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
 
                 // 解析切点表达式
                 String pointCutExpression = AopUtils.getPointCutExpression(beanType);
-
                 // 解析 Advice
-                Stream.of(ReflectionUtils.getDeclaredMethods(beanType))
-                        .filter(AopUtils::isAdviceMethod)
-                        .forEach(m -> {
-                            Advice advice = null;
-                            if (m.isAnnotationPresent(Before.class)) {
-                                advice = new BeforeAdviceInfo(beanName, m, beanFactory);
-                            } else if (m.isAnnotationPresent(After.class)) {
-                                advice = new AfterAdviceInfo(beanName, m, beanFactory);
-                            } else if (m.isAnnotationPresent(AfterThrowing.class)) {
-                                advice = new AfterThrowingAdviceInfo(beanName, m, beanFactory);
-                            }
-                            if (advice != null) {
-                                advisors.add(new AdvisorMeta(advice, pointCutExpression));
-                                aspectNameCache.add(beanName);
-                            }
-                        });
+                Method[] methods = ReflectionUtils.getDeclaredMethods(beanType);
+                for (Method method : methods) {
+                    // 非Advice方法忽略
+                    if (!AopUtils.isAdviceMethod(method)) {
+                        continue;
+                    }
+                    Advice advice = null;
+                    if (method.isAnnotationPresent(Before.class)) {
+                        advice = new BeforeAdviceInfo(beanName, method, beanFactory);
+                    } else if (method.isAnnotationPresent(After.class)) {
+                        advice = new AfterAdviceInfo(beanName, method, beanFactory);
+                    } else if (method.isAnnotationPresent(AfterThrowing.class)) {
+                        advice = new AfterThrowingAdviceInfo(beanName, method, beanFactory);
+                    }
+                    if (advice != null) {
+                        advisorList.add(new AdvisorInfo(advice, pointCutExpression));
+                        aspectNameCache.add(beanName);
+                    }
+                }
             }
         }
-        return advisors;
     }
 
-
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
-        // 获取指定类匹配的Advisor
-        List<Advisor> advisors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName);
-        if (!advisors.isEmpty()) {
-            return createProxy(bean, beanName, advisors);
-        }
-        return bean;
-    }
-
-    private Object createProxy(Object bean, String beanName, List<Advisor> advisors) {
-
-        ProxyFactory factory = new ProxyFactory();
-        factory.setAdvisors(advisors);
-        factory.setTarget(bean);
-        return factory.getProxy();
-    }
 
     /**
-     * 根据类名筛选出合适Advisor
+     * 创建动态代理, bean初始化后执行
      *
-     * @param beanClass
+     * @param bean
      * @param beanName
      * @return
+     * @throws BeansException
      */
-    private List<Advisor> getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName) {
-
-        List<Advisor> advisors = new ArrayList<>();
-
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        // 获取指定类匹配的Advisor
+        List<Advisor> advisorForBeans = new ArrayList<>();
         for (Advisor advisor : advisorList) {
             // 初步筛选出和 beanClass 匹配的advisor
-            if (advisor.matchClass(beanClass)) {
-                advisors.add(advisor);
+            if (advisor.matchClass(bean.getClass())) {
+                advisorForBeans.add(advisor);
             }
         }
-        return advisors;
+        // 创建动态代理
+        if (!advisorForBeans.isEmpty()) {
+            ProxyFactory factory = new ProxyFactory();
+            factory.setAdvisors(advisorForBeans);
+            factory.setTarget(bean);
+            return factory.getProxy();
+        }
+        return bean;
     }
 }

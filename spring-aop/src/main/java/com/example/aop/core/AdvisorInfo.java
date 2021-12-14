@@ -11,9 +11,9 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class AdvisorMeta extends AdvisorSupport {
+public class AdvisorInfo extends AdvisorSupport {
 
-    public AdvisorMeta(Advice advice, String pointCutExpression) {
+    public AdvisorInfo(Advice advice, String pointCutExpression) {
         super(advice, pointCutExpression);
     }
 }

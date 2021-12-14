@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
  * @author zhougaojun
  * @since 2021/12/14
  */
-public interface Matcher {
+public interface PointCutMatcher {
 
     /**
      * 根据类匹配

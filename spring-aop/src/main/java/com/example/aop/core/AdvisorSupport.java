@@ -17,7 +17,7 @@ public abstract class AdvisorSupport implements Advisor {
     public AdvisorSupport(Advice advice, String pointCutExpression) {
         this.advice = advice;
         this.pointCutExpression = pointCutExpression;
-        aspectJExpressionPointcut.setExpression(pointCutExpression);
+        aspectJExpressionPointcut.setExpression(getPointCutExpression());
     }
 
     @Override
