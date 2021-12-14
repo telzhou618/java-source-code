@@ -25,7 +25,7 @@ public class ProxyFactory extends AdvisedSupport {
                 || targetClass.getInterfaces().length > 0) {
             return new JdkDynamicAopProxy(advisedSupport);
         } else {
-            return new CglibProxy(advisedSupport);
+            return new CglibAopProxy(advisedSupport);
         }
     }
 }

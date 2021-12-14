@@ -1,11 +1,12 @@
 package com.example.aop;
 
-import com.example.aop.annotation.*;
-import com.example.aop.core.AdviceMetaData;
-import com.example.aop.core.Advisor;
-import com.example.aop.core.AdvisorMetaData;
-import com.example.aop.core.PointCutMetaData;
+import com.example.aop.annotation.After;
+import com.example.aop.annotation.AfterThrowing;
+import com.example.aop.annotation.Aspect;
+import com.example.aop.annotation.Before;
+import com.example.aop.core.*;
 import com.example.aop.proxy.ProxyFactory;
+import com.example.aop.util.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.util.ReflectionUtils;
@@ -35,6 +36,7 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
         // 得到容器中所以的beanName
         String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
                 this.beanFactory, Object.class, true, false);
+
         for (String beanName : beanNames) {
             if (aspectNameCache.contains(beanName)) {
                 continue;
@@ -42,30 +44,27 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
             Class<?> beanType = this.beanFactory.getType(beanName);
             assert beanType != null;
             if (beanType.isAnnotationPresent(Aspect.class)) {
-                // 解析 PointCut
-                PointCutMetaData pointCutMetaData = Stream.of(ReflectionUtils.getDeclaredMethods(beanType))
-                        .filter(m -> m.isAnnotationPresent(Pointcut.class))
-                        .findFirst()
-                        .map(m -> m.getAnnotation(Pointcut.class))
-                        .map(a -> new PointCutMetaData(a.value()))
-                        .orElse(null);
+
+                // 解析切点表达式
+                String pointCutExpression = AopUtils.getPointCutExpression(beanType);
 
                 // 解析 Advice
                 Stream.of(ReflectionUtils.getDeclaredMethods(beanType))
-                        .filter(m -> m.isAnnotationPresent(Before.class)
-                                || m.isAnnotationPresent(After.class)
-                                || m.isAnnotationPresent(AfterReturning.class)
-                                || m.isAnnotationPresent(AfterThrowing.class)
-                        ).forEach(m -> {
-
-                    AdviceMetaData adviceMetaData = new AdviceMetaData()
-                            .setAspectName(beanName)
-                            .setAdviceMethodName(m.getName())
-                            .setAdviceMethod(m);
-                    // 存储Advisor
-                    advisors.add(new AdvisorMetaData(adviceMetaData, pointCutMetaData));
-                    aspectNameCache.add(beanName);
-                });
+                        .filter(AopUtils::isAdviceMethod)
+                        .forEach(m -> {
+                            Advice advice = null;
+                            if (m.isAnnotationPresent(Before.class)) {
+                                advice = new BeforeAdviceInfo(beanName, m, beanFactory);
+                            } else if (m.isAnnotationPresent(After.class)) {
+                                advice = new AfterAdviceInfo(beanName, m, beanFactory);
+                            } else if (m.isAnnotationPresent(AfterThrowing.class)) {
+                                advice = new AfterThrowingAdviceInfo(beanName, m, beanFactory);
+                            }
+                            if (advice != null) {
+                                advisors.add(new AdvisorMeta(advice, pointCutExpression));
+                                aspectNameCache.add(beanName);
+                            }
+                        });
             }
         }
         return advisors;
@@ -77,7 +76,10 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
 
         // 获取指定类匹配的Advisor
         List<Advisor> advisors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName);
-        return createProxy(bean, beanName, advisors);
+        if (!advisors.isEmpty()) {
+            return createProxy(bean, beanName, advisors);
+        }
+        return bean;
     }
 
     private Object createProxy(Object bean, String beanName, List<Advisor> advisors) {
@@ -88,7 +90,23 @@ public class MyAnnotationAwareAspectJAutoProxyCreator extends MyAbstractAutoProx
         return factory.getProxy();
     }
 
-    private List<Advisor> getAdvicesAndAdvisorsForBean(Class<?> aClass, String beanName) {
-        return advisorList;
+    /**
+     * 根据类名筛选出合适Advisor
+     *
+     * @param beanClass
+     * @param beanName
+     * @return
+     */
+    private List<Advisor> getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName) {
+
+        List<Advisor> advisors = new ArrayList<>();
+
+        for (Advisor advisor : advisorList) {
+            // 初步筛选出和 beanClass 匹配的advisor
+            if (advisor.matchClass(beanClass)) {
+                advisors.add(advisor);
+            }
+        }
+        return advisors;
     }
 }

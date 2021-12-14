@@ -23,6 +23,9 @@ public abstract class MyAbstractAutoProxyCreator implements InstantiationAwareBe
      */
     protected static List<Advisor> advisorList = new ArrayList<>(256);
 
+    /**
+     * 记录 Aspect缓存，解析过，不在重复解析
+     */
     protected static List<String> aspectNameCache = new ArrayList<>(256);
 
     protected ListableBeanFactory beanFactory;

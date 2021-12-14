@@ -1,6 +1,7 @@
 package com.example.aop.proxy;
 
 import com.example.aop.core.Advisor;
+import com.example.aop.util.AopUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationHandler;
@@ -12,7 +13,7 @@ import java.lang.reflect.Proxy;
  *
  * @author jameszhou
  */
-public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
+public class JdkDynamicAopProxy  implements AopProxy, InvocationHandler {
 
     private final AdvisedSupport advised;
 
@@ -26,27 +27,38 @@ public class JdkDynamicAopProxy implements AopProxy, InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
+
+        Object target = advised.getTarget();
+        Class<?> targetClass = target.getClass();
 
         // 排除 toString,equals,hashCode 方法无需增强
         if (ReflectionUtils.isEqualsMethod(method)
                 || ReflectionUtils.isHashCodeMethod(method)
                 || ReflectionUtils.isToStringMethod(method)) {
-            return method.invoke(advised.getTarget(), args);
+            return method.invoke(target, arguments);
+        }
+        // 切面类不走代理
+        if (AopUtils.isAspectAnnotation(target)) {
+            return method.invoke(target, arguments);
         }
         Object invoke = null;
         try {
             // 执行 before
-            for (Advisor advisor : advised.getAdvisors()) {
-                advisor.getAdvice().invoke(args);
+            for (Advisor advisor : advised.getBeforeAdvisors(method, targetClass)) {
+                advisor.getAdvice().invoke(arguments);
             }
-            invoke = method.invoke(advised.getTarget(), args);
+            invoke = method.invoke(advised.getTarget(), arguments);
             // 执行 after
+            for (Advisor advisor : advised.getAfterAdvisors(method, targetClass)) {
+                advisor.getAdvice().invoke(arguments);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             // 执行 AfterThrowing
-        } finally {
-
+            for (Advisor advisor : advised.getAfterThrowingAdvisors(method, targetClass)) {
+                advisor.getAdvice().invoke(arguments);
+            }
         }
         return invoke;
     }
