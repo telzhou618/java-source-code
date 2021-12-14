@@ -9,10 +9,15 @@ import org.example.mapper.BlogMapper;
 import java.io.InputStream;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class AnnotationCrudMain {
 
+    /**
+     * 解析注解方式实例
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
 
         String resource = "mybatis-config.xml";

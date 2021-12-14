@@ -1,7 +1,5 @@
 package org.mybatis.session;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.mybatis.binding.MapperProxy;
 import org.mybatis.builder.annotation.MapperAnnotationBuilder;
 import org.mybatis.executor.Executor;
@@ -21,10 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
-@Getter
-@Setter
 public class Configuration {
 
     private Environment environment;
@@ -69,5 +65,21 @@ public class Configuration {
         knownMappers.put(type, type);
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(this, type);
         parser.parse();
+    }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+
+    public Map<String, MappedStatement> getMappedStatements() {
+        return mappedStatements;
+    }
+
+    public Map<Class<?>, Class<?>> getKnownMappers() {
+        return knownMappers;
     }
 }

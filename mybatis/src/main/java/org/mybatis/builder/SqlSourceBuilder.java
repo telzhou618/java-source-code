@@ -4,7 +4,7 @@ import org.mybatis.parsing.GenericTokenParser;
 import org.mybatis.parsing.TokenHandler;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class SqlSourceBuilder {
 

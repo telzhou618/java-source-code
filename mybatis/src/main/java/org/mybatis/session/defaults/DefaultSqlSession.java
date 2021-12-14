@@ -8,7 +8,7 @@ import org.mybatis.session.SqlSession;
 import java.util.List;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class DefaultSqlSession implements SqlSession {
 

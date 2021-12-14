@@ -7,7 +7,7 @@ import org.mybatis.session.SqlSession;
 import org.mybatis.session.SqlSessionFactory;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 

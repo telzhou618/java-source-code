@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class SqlSessionFactoryBuilder {
 

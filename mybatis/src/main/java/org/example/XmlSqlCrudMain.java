@@ -10,10 +10,15 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class XmlSqlCrudMain {
 
+    /**
+     * 解析XML方式实例
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
 
         String resource = "mybatis-config.xml";

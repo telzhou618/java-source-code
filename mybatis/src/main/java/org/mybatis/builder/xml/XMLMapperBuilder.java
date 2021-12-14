@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class XMLMapperBuilder {
 
@@ -63,11 +63,12 @@ public class XMLMapperBuilder {
                 String originalSql = xNode.getStringBody();
                 SqlCommandType sqlCommandType = SqlCommandType.valueOf(nodeName.toUpperCase(Locale.ENGLISH));
                 Class<?> aClass = Resources.classForName(resultType);
-                MappedStatement ms = new MappedStatement()
-                        .setConfiguration(configuration)
-                        .setId(namespace + "." + id)
-                        .setSqlCommandType(sqlCommandType)
-                        .setResultTypeClass(aClass);
+
+                MappedStatement ms = new MappedStatement();
+                ms.setConfiguration(configuration);
+                ms.setId(namespace + "." + id);
+                ms.setSqlCommandType(sqlCommandType);
+                ms.setResultTypeClass(aClass);
                 // 解析SQL
                 SqlSourceBuilder sqlSourceBuilder = new SqlSourceBuilder();
                 String sql = sqlSourceBuilder.parse(originalSql);

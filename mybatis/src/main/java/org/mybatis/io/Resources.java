@@ -25,7 +25,7 @@ import java.util.Properties;
 /**
  * 资源管理工具类
  *
- * @author zhou1
+ * @author telzhou
  */
 public class Resources {
 

@@ -1,7 +1,7 @@
 package org.mybatis.mapping;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public enum SqlCommandType {
     UNKNOWN, INSERT, UPDATE, DELETE, SELECT;

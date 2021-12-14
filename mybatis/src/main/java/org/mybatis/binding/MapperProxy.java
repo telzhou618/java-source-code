@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class MapperProxy<T> implements InvocationHandler {
 

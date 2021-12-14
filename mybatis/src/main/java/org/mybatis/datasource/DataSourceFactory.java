@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 /**
- * @author zhou1
+ * @author telzhou
  * 数据源工厂
  */
 public interface DataSourceFactory {

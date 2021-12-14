@@ -1,4 +1,4 @@
 /**
- * @author zhou1
+ * @author telzhou
  */
 package org.mybatis.mapping;

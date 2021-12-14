@@ -18,10 +18,7 @@ package org.mybatis.session;
 import java.util.List;
 
 /**
- * The primary Java interface for working with MyBatis.
- * Through this interface you can execute commands, get mappers and manage transactions.
- *
- * @author Clinton Begin
+ * @author telzhou
  */
 public interface SqlSession{
 

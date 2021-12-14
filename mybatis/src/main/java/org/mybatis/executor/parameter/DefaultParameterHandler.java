@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * @author zhou1
+ * @author telzhou
  */
 public class DefaultParameterHandler implements ParameterHandler {
 
