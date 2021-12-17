@@ -1,5 +1,6 @@
 package com.example.broker;
 
+import com.example.store.StoreService;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -15,8 +16,14 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 @ChannelHandler.Sharable
 public class BrokerNettyServerHandler extends SimpleChannelInboundHandler<String> {
 
-    //GlobalEventExecutor.INSTANCE 是全局的事件执行器，是一个单例
-    private static ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    // 存储Handler
+    private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
+    private final StoreService storeService;
+
+    public BrokerNettyServerHandler(StoreService storeService) {
+        this.storeService = storeService;
+    }
 
     //表示 channel 处于就绪状态, 提示上线
     @Override
@@ -45,6 +52,8 @@ public class BrokerNettyServerHandler extends SimpleChannelInboundHandler<String
                 ch.writeAndFlush(msg);
             }
         });
+        // 持久化消息
+        storeService.storeMessage(msg);
     }
 
     @Override

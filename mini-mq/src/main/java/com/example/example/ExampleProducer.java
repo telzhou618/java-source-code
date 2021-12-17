@@ -9,6 +9,11 @@ import com.example.producer.Producer;
  */
 public class ExampleProducer {
 
+    /**
+     * 发送消息
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
 
         Producer producer = new DefaultProducer("test_topic");

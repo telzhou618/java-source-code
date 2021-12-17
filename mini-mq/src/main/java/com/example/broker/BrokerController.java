@@ -6,7 +6,7 @@ package com.example.broker;
  */
 public class BrokerController {
 
-    public static void main(String[] args) {
+    public void start() {
         Broker broker = new DefaultBroker();
         broker.start();
     }

@@ -10,6 +10,10 @@ import com.example.consumer.MessageListener;
  */
 public class ExampleConsumer {
 
+    /**
+     * 启动 Consumer
+     * @param args
+     */
     public static void main(String[] args) {
 
         Consumer consumer = new DefaultConsumer("test_topic");
