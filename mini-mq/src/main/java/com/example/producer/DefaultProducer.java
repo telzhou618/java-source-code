@@ -24,9 +24,14 @@ public class DefaultProducer implements Producer {
     @Override
     public void start() {
         // 启动NettyClient
-        nettyClient = new NettyClient(RemotingHelper.getDefaultNettyConfig());
+        nettyClient = new NettyClient(RemotingHelper.getDefaultNettyConfig(), new ProducerNettyHandler());
         nettyClient.start();
         System.out.println("producer start...");
+    }
+
+    @Override
+    public void shutdown() {
+        this.nettyClient.shutdown();
     }
 
     @Override

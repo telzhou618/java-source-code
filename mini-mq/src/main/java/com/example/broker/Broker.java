@@ -7,4 +7,6 @@ package com.example.broker;
 public interface Broker {
 
     void start();
+
+    void shutdown();
 }

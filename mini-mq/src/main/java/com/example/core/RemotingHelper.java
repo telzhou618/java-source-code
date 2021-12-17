@@ -16,7 +16,6 @@ public class RemotingHelper {
     }
 
     public static SocketAddress toSocketAddress(NettyConfig config) {
-        InetSocketAddress isa = new InetSocketAddress(config.getHost(), config.getPort());
-        return isa;
+        return new InetSocketAddress(config.getHost(), config.getPort());
     }
 }

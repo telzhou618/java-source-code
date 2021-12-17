@@ -8,5 +8,7 @@ public interface Producer {
 
     void start();
 
+    void shutdown();
+
     void send(String message) throws Exception;
 }

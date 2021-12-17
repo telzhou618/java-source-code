@@ -9,7 +9,6 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author zhougaojun
@@ -18,19 +17,23 @@ import lombok.Setter;
 @Getter
 public class NettyClient {
 
-    EventLoopGroup group = new NioEventLoopGroup(10);
-    private NettyConfig nettyConfig;
-    private Bootstrap bootstrap;
+    private final EventLoopGroup eventLoopGroupWorker = new NioEventLoopGroup(10);
+    private final Bootstrap bootstrap = new Bootstrap();
 
-    public NettyClient(NettyConfig nettyConfig) {
+
+    private NettyConfig nettyConfig;
+    private ChannelHandler channelHandler;
+
+
+    public NettyClient(NettyConfig nettyConfig, ChannelHandler channelHandler) {
         this.nettyConfig = nettyConfig;
+        this.channelHandler = channelHandler;
     }
 
     public void start() {
         //客户端需要一个事件循环组
         try {
-            bootstrap = new Bootstrap();
-            bootstrap.group(group)
+            this.bootstrap.group(eventLoopGroupWorker)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
@@ -43,16 +46,16 @@ public class NettyClient {
                             //向pipeline加入编码器
                             pipeline.addLast("encoder", new StringEncoder());
                             //加入自己的业务处理handler
-                            pipeline.addLast(new MessageNettyHandler());
+                            pipeline.addLast(channelHandler);
                         }
                     });
-           // System.out.println("netty client start");
+            // System.out.println("netty client start");
             //启动客户端去连接服务器端
             //   ChannelFuture channelFuture = bootstrap.connect(nettyConfig.getHost(), nettyConfig.getPort()).sync();
             //对关闭通道进行监听
             //   channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-            group.shutdownGracefully();
+            eventLoopGroupWorker.shutdownGracefully();
         }
 
     }
@@ -60,5 +63,13 @@ public class NettyClient {
     public Channel getChannel() throws InterruptedException {
         ChannelFuture channelFuture = this.bootstrap.connect(RemotingHelper.toSocketAddress(nettyConfig)).sync();
         return channelFuture.channel();
+    }
+
+    public void shutdown() {
+        try {
+            this.eventLoopGroupWorker.shutdownGracefully();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.example.broker;
 import com.example.core.RemotingHelper;
 import com.example.netty.NettyConfig;
 import com.example.netty.NettyServer;
+import io.netty.channel.ChannelHandler;
 
 /**
  * @author zhougaojun
@@ -10,7 +11,9 @@ import com.example.netty.NettyServer;
  */
 public class DefaultBroker implements Broker {
 
-    private NettyConfig nettyConfig = RemotingHelper.getDefaultNettyConfig();
+    private final NettyConfig nettyConfig = RemotingHelper.getDefaultNettyConfig();
+    private final ChannelHandler channelHandler = new BrokerNettyServerHandler();
+
     private NettyServer nettyServer;
 
     @Override
@@ -18,8 +21,15 @@ public class DefaultBroker implements Broker {
 
         System.out.println("broker start...");
         // 启动nettyServer
-        nettyServer = new NettyServer(nettyConfig);
+        nettyServer = new NettyServer(nettyConfig, channelHandler);
         nettyServer.start();
 
+    }
+
+    @Override
+    public void shutdown() {
+        if(nettyServer != null){
+            nettyServer.shutdown();
+        }
     }
 }

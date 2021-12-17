@@ -14,18 +14,21 @@ import io.netty.handler.codec.string.StringEncoder;
  */
 public class NettyServer {
 
-    private NettyConfig nettyConfig;
+    private final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+    private final EventLoopGroup workerGroup = new NioEventLoopGroup(8);
+    private final ServerBootstrap bootstrap = new ServerBootstrap();
 
-    public NettyServer(NettyConfig nettyConfig) {
+    private NettyConfig nettyConfig;
+    private ChannelHandler channelHandler;
+
+    public NettyServer(NettyConfig nettyConfig, ChannelHandler channelHandler) {
         this.nettyConfig = nettyConfig;
+        this.channelHandler = channelHandler;
     }
 
     public void start() {
 
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(8);
         try {
-            ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
@@ -41,7 +44,7 @@ public class NettyServer {
                             //向pipeline加入编码器
                             pipeline.addLast("encoder", new StringEncoder());
                             //加入自己的业务处理handler
-                            pipeline.addLast(new NettyServerHandler());
+                            pipeline.addLast(channelHandler);
                         }
                     });
             System.out.println("netty server启动。。");
@@ -53,5 +56,10 @@ public class NettyServer {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    public void shutdown() {
+        bossGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
     }
 }

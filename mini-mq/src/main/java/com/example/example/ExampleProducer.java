@@ -9,16 +9,11 @@ import com.example.producer.Producer;
  */
 public class ExampleProducer {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
         Producer producer = new DefaultProducer("test_topic");
         producer.start();
-        producer.send("hello world!");
-        producer.send("hello world!");
-        producer.send("hello world!");
-        producer.send("hello world!");
-        producer.send("hello world!");
-        producer.send("hello world!");
-
+        producer.send("hello world");
+        producer.shutdown();
     }
 }

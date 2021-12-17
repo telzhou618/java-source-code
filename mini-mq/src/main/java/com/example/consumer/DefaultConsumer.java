@@ -3,7 +3,6 @@ package com.example.consumer;
 
 import com.example.core.RemotingHelper;
 import com.example.netty.NettyClient;
-import com.example.netty.NettyConfig;
 import io.netty.channel.Channel;
 
 import java.util.ArrayList;
@@ -15,9 +14,9 @@ import java.util.List;
  */
 public class DefaultConsumer implements Consumer {
 
-    List<MessageListener> messageListeners = new ArrayList<>(256);
-    private NettyConfig nettyConfig = RemotingHelper.getDefaultNettyConfig();
+    private List<MessageListener> messageListeners = new ArrayList<>(256);
     private final String topic;
+
     private NettyClient nettyClient;
 
     public DefaultConsumer(String topic) {
@@ -28,7 +27,9 @@ public class DefaultConsumer implements Consumer {
     public void start() {
         try {
             System.out.println("Consumer start...");
-            nettyClient = new NettyClient(nettyConfig);
+            nettyClient = new NettyClient(
+                    RemotingHelper.getDefaultNettyConfig(),
+                    new ConsumerNettyHandler(messageListeners));
             nettyClient.start();
             Channel channel = nettyClient.getChannel();
         } catch (Exception e) {
