@@ -16,16 +16,15 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 @ChannelHandler.Sharable
 public class BrokerNettyServerHandler extends SimpleChannelInboundHandler<String> {
 
-    // 存储Handler
+    // 存储Channel
     private static final ChannelGroup channelGroup = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
-
+    // 持久化
     private final StoreService storeService;
 
     public BrokerNettyServerHandler(StoreService storeService) {
         this.storeService = storeService;
     }
 
-    //表示 channel 处于就绪状态, 提示上线
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         Channel channel = ctx.channel();
@@ -33,11 +32,9 @@ public class BrokerNettyServerHandler extends SimpleChannelInboundHandler<String
         System.out.println(ctx.channel().remoteAddress() + " 上线了");
     }
 
-    //表示 channel 处于不活动状态, 提示离线了
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
         Channel channel = ctx.channel();
-        //将客户离开信息推送给当前在线的客户
         System.out.println(ctx.channel().remoteAddress() + " 下线了");
     }
 
