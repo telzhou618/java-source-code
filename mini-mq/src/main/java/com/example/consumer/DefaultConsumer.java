@@ -5,6 +5,8 @@ import com.example.core.RemotingHelper;
 import com.example.netty.NettyClient;
 import com.example.netty.NettyConfig;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +17,8 @@ import java.util.List;
  */
 public class DefaultConsumer implements Consumer {
 
-    private List<MessageListener> messageListeners = new ArrayList<>(256);
+    private final List<MessageListener> messageListeners = new ArrayList<>(256);
     private final String topic;
-    private NettyConfig nettyConfig;
-    private ConsumerNettyHandler consumerNettyHandler;
     private NettyClient nettyClient;
 
     public DefaultConsumer(String topic) {
@@ -32,17 +32,26 @@ public class DefaultConsumer implements Consumer {
             // 初始化
             prepareConsumer();
             // 启动NettyClient
-            nettyClient = new NettyClient(nettyConfig, consumerNettyHandler);
             nettyClient.start();
+            // 注册Consumer
             Channel channel = nettyClient.getChannel();
+            channel.writeAndFlush(topic).addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture channelFuture) throws Exception {
+                    if (!channelFuture.isSuccess()) {
+                        System.out.println("Consumer 注册失败！");
+                    }
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void prepareConsumer() {
-        this.nettyConfig = RemotingHelper.getDefaultNettyConfig();
-        this.consumerNettyHandler = new ConsumerNettyHandler(messageListeners);
+        NettyConfig nettyConfig = RemotingHelper.getDefaultNettyConfig();
+        ConsumerNettyHandler consumerNettyHandler = new ConsumerNettyHandler(messageListeners);
+        this.nettyClient = new NettyClient(nettyConfig, consumerNettyHandler);
     }
 
     @Override
