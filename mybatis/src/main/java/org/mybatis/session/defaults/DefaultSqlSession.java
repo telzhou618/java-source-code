@@ -1,5 +1,6 @@
 package org.mybatis.session.defaults;
 
+import org.mybatis.executor.ErrorContext;
 import org.mybatis.executor.Executor;
 import org.mybatis.mapping.MappedStatement;
 import org.mybatis.session.Configuration;
